@@ -10,7 +10,24 @@ Approach: Queried the same table but filtered for is_a_fund = 1, then grouped by
 Approach: Queried the savings_savingsaccount table, summing up the confirmed_amount per owner_id after grouping.
 -	Combining All Metrics
 Approach: Joined the three temporary tables (CTEs) with the users_customuser table using owner_id, to generate a final table showing each user’s full name, number of savings and investment accounts, and total deposits.
+
 -	Challenges & Resolutions
 All 3 tables contained different primary and foreign keys so initially I joined the id in user_id to a different id in savings and plan which returned no results due to mismatched keys. I resolved this by having another look and understanding at the ‘hints’ section where the columns were properly explained. 
 
 
+## Question 2
+Approach to answer
+- Monthly Transactions per Customer
+I extracted year and month from transaction_date and grouped by owner_id and month to count the monthly transactions.
+- Average Monthly Transactions
+Afterwards I calculated the average number of monthly transactions for each customer.
+- Frequency Categorization
+I used CASE logic to segment customers into frequency categories based on their average.
+- Final Aggregation
+I grouped the frequency category to count customers and calculated the average transaction rate within each segment.
+
+
+-- Challenges and Resolutions
+Initially, I attempted to group by only month instead of both owner_id and month, which led to incorrect transaction averages per customer. I corrected this by grouping by the month and owner_id. 
+I used Data Format (transaction_date, '%Y-%m') for Monthly Aggregation : 
+Since the data spans multiple years (from 2016 onwards), I chose to use DATE_FORMAT(transaction_date, '%Y-%m') to group transactions by both year and month. This prevents incorrect aggregation across the same month in different years. For example, aggregating solely by MONTH(transaction_date) would combine all Januaries (e.g., Jan 2016, Jan 2017), leading to inflated and misleading transaction counts. Using the year-month format ensures each month's data is accurately represented within its specific year.
