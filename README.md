@@ -29,5 +29,6 @@ I grouped the frequency category to count customers and calculated the average t
 
 #### Challenges and Resolutions
 Initially, I attempted to group by only month instead of both owner_id and month, which led to incorrect transaction averages per customer. I corrected this by grouping by the month and owner_id. 
-I used Data Format (transaction_date, '%Y-%m') for Monthly Aggregation : 
+
+- I used Data Format (transaction_date, '%Y-%m') for Monthly Aggregation : 
 Since the data spans multiple years (from 2016 onwards), I chose to use DATE_FORMAT(transaction_date, '%Y-%m') to group transactions by both year and month. This prevents incorrect aggregation across the same month in different years. For example, aggregating solely by MONTH(transaction_date) would combine all Januaries (e.g., Jan 2016, Jan 2017), leading to inflated and misleading transaction counts. Using the year-month format ensures each month's data is accurately represented within its specific year.
