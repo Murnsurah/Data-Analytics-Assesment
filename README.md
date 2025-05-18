@@ -32,3 +32,19 @@ Initially, I attempted to group by only month instead of both owner_id and month
 
 - I used Data Format (transaction_date, '%Y-%m') for Monthly Aggregation : 
 Since the data spans multiple years (from 2016 onwards), I chose to use DATE_FORMAT(transaction_date, '%Y-%m') to group transactions by both year and month. This prevents incorrect aggregation across the same month in different years. For example, aggregating solely by MONTH(transaction_date) would combine all Januaries (e.g., Jan 2016, Jan 2017), leading to inflated and misleading transaction counts. Using the year-month format ensures each month's data is accurately represented within its specific year.
+
+
+## Question 3 
+Approach
+- last_transactions CTE:
+For this, i extracted the most recent transaction date (MAX(transaction_date)) for each plan_id from the savings_savingsaccount table and i Grouped it by plan_id to ensure the latest activity was isolated per account.
+
+- filtered_plans CTE:
+I filtered the plans_plan table to select only active savings or investment accounts. This was done by checking is_regular_savings = 1 or is_a_fund = 1. I then added a CASE statement to label the account type as either "Savings" or "Investment" for readability.
+
+-Final SELECT with JOIN:
+I joined the active plans from filtered_plans with the transaction info from last_transactions using plan_id. I filtered results to show only: Accounts with no transaction date (NULL – never transacted), or Accounts where the last transaction was more than 365 days ago.
+
+#### Challenges and Resolutions
+I misinterpreted "Last 1 Year” part of the question, hence filtering DATEDIFF(...) < 365, which incorrectly included active accounts. I corrected to > 365 to focus on inactivity beyond one year which gave me the needed result.
+Accounts with no transaction records at all were being excluded because the join required matching records in both tables. I resolved this by using a LEFT JOIN to include transaction dates that were null, which included the accounts with no transactions. 
